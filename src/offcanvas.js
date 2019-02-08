@@ -53,6 +53,11 @@ class Offcanvas {
       this.afterLeave = noop
     }
 
+    // State change hooks
+    if (!this.hasOwnProperty('beforeStateChange')) {
+      this.beforeStateChange = noop
+    }
+
     this.pushAway()
   }
 

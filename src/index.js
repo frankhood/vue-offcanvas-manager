@@ -4,6 +4,7 @@ import Offcanvas from './offcanvas'
 import offcanvasStoreModule from './store'
 import { toCamelCase } from './utils'
 import * as animations from './animations'
+import { mapState } from 'vuex'
 
 // GsapPlugins import, avoiding tree-shaking
 // eslint-disable-next-line no-unused-vars
@@ -15,10 +16,6 @@ const VueOffcanvas = {
       throw new Error('Vue Offcanvas: please, provide a Vuex store in the options object')
     }
     options.store.registerModule('vueOffcanvasManager', offcanvasStoreModule)
-
-    /* Vue instance properties */
-    Vue.prototype.$mainPanel = undefined
-    Vue.prototype.$offCanvasElements = {}
 
     /* Vue instance methods */
 
@@ -41,7 +38,7 @@ const VueOffcanvas = {
       TweenLite.set(document.body, {
         position: 'static'
       })
-      TweenLite.set(window, { scrollTo: this.$store.state.vueOffcanvasManager.lastScrollPosition })
+      TweenLite.set(window, { scrollTo: this.$store.state.vueOffcanvasManager.$lastScrollPosition })
       this.$store.dispatch('vueOffcanvasManager/saveScroll', null)
     }
 
@@ -52,7 +49,7 @@ const VueOffcanvas = {
 
         const animationFn = toCamelCase($oc.openAnimation)
 
-        if ($oc.lockScroll && !this.$store.state.vueOffcanvasManager.lastScrollPosition) {
+        if ($oc.lockScroll && !this.$store.state.vueOffcanvasManager.$lastScrollPosition) {
           this.$lockScroll()
         }
 
@@ -65,6 +62,16 @@ const VueOffcanvas = {
           }
         })
           .then(() => animations[animationFn]($oc))
+          .then(() => {
+            return new Promise((resolve, reject) => {
+              try {
+                $oc.beforeStateChange.call(this)
+                resolve()
+              } catch (e) {
+                reject(e)
+              }
+            })
+          })
           .then(() => this.$store.dispatch('vueOffcanvasManager/setOpeningState', {
             offcanvas: $oc,
             openingState: true
@@ -91,7 +98,7 @@ const VueOffcanvas = {
 
         // Check if other scroll-locking panels are open
         // TODO simplify finding other open scroll-locking panels
-        const ocDict = this.$store.state.vueOffcanvasManager.offCanvasElements
+        const ocDict = this.$store.state.vueOffcanvasManager.$offCanvasElements
 
         const ocList = Object.keys(ocDict)
 
@@ -119,6 +126,24 @@ const VueOffcanvas = {
           }
         })
           .then(() => animations[animationFn]($oc))
+          .then(() => new Promise((resolve) => {
+            if ($oc.lockScroll && !$oc.isAnimating && !otherLockingOpen) {
+              this.$recoverScroll()
+              resolve()
+            } else {
+              resolve()
+            }
+          }))
+          .then(() => {
+            return new Promise((resolve, reject) => {
+              try {
+                $oc.beforeStateChange.call(this)
+                resolve()
+              } catch (e) {
+                reject(e)
+              }
+            })
+          })
           .then(() => $oc.pushAway())
           .then(() => this.$store.dispatch('vueOffcanvasManager/setOpeningState', {
             offcanvas: $oc,
@@ -172,10 +197,9 @@ const VueOffcanvas = {
     // Configure the main app panel
     Vue.directive('main-panel', {
       bind (el, binding, vnode) {
-        if (vnode.context.$store.state.vueOffcanvasManager.mainPanel) {
+        if (vnode.context.$store.state.vueOffcanvasManager.$mainPanel) {
           throw new Error('More than a main panel has been defined')
         } else {
-          // vnode.context.$mainPanel = el
           vnode.context.$store.dispatch('vueOffcanvasManager/setMainPanel', el)
         }
       }
@@ -230,6 +254,10 @@ const VueOffcanvas = {
           }
         } catch (e) {}
       }
+    })
+
+    Vue.mixin({
+      ...mapState('vueOffcanvasManager', [''])
     })
   }
 }

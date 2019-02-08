@@ -6,9 +6,9 @@ import getters from './getters'
 export default {
   namespaced: true,
   state: {
-    lastScrollPosition: null,
-    mainPanel: null,
-    offCanvasElements: {}
+    $lastScrollPosition: null,
+    $mainPanel: null,
+    $offCanvasElements: {}
   },
   actions,
   mutations,

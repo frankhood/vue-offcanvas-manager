@@ -5,7 +5,7 @@ export default {
   saveScroll ({ commit, state }, position) {
     return new Promise((resolve, reject) => {
       commit(types.SAVE_SCROLL, position)
-      resolve(state.lastScrollPosition)
+      resolve(state.$lastScrollPosition)
     })
   },
   setMainPanel ({ commit }, el) {

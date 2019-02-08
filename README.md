@@ -29,7 +29,41 @@ Vue.use(VueOffcanvasManager, {
 })
 ```
 
-TODO: explain how the plugin works
+The plugin provides a custom directive, `v-offcanvas`, that can be used to define offcanvas elements in templates
+
+```vue
+<template>
+  <div v-offcanvas:oc-name="options">
+    <p>Offcanvas content</p>
+  </div>
+</template>
+```
+
+where `options` is an object literal containing settings for the offcanvas, such as its position, animation, etc.
+
+### Offcanvas options
+
+The configuration object allows to override default offcanvas settings for each instantiated offcanvas. The following table contains all available options with their default value, that is applied if no value is provided
+
+Option          | Description                    | Default
+----------------|--------------------------------|----------
+`position`      | Offcanvas position on screen   | 'top'
+`openAnimation`      | Opening animation          | 'fade-in'
+`closeAnimation`      | Closing animation          | 'fade-out'
+`duration`      | Animation duration (in ms)          | 500
+`lockScroll`      | If true, locks the window scroll when the offcanvas is open. Useful for screen replacers. | false
+
+### Animation hooks
+
+Several JavaScript hooks are provided in the animation cycle. The callbacks, provided in the offcanvas configuration object as well, are called in the `Vue` instance scope, so that `this` will be bound to the Vue VM where the offcanvas is instantiated.
+
+Hook | Description
+-----|-------------
+`beforeEnter` | Called before the enter animation starts
+`afterEnter` | Called after the enter animation is completed
+`beforeLeave` | Called before the leave animation starts
+`afterLeave` | Called after the leave animation is completed
+`beforeStateChange` | Called after the enter/leave animations end but before the opening state change is triggered on the offcanvas object
 
 ## Development
 
