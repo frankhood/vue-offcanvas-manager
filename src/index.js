@@ -1,6 +1,5 @@
 import { TweenLite } from 'gsap'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
-import { isEqual } from 'lodash'
 import Offcanvas from './offcanvas'
 import offcanvasStoreModule from './store'
 import { toCamelCase } from './utils'
@@ -11,7 +10,7 @@ import * as animations from './animations'
 const GsapPlugins = [ScrollToPlugin]
 
 const VueOffcanvas = {
-  install (Vue, options) {
+  install: function (Vue, options) {
     if (!options || !options.store) {
       throw new Error('Vue Offcanvas: please, provide a Vuex store in the options object')
     }
@@ -153,6 +152,21 @@ const VueOffcanvas = {
       })
     }
 
+    Vue.prototype.$removeOffcanvas = function (element) {
+      return new Promise((resolve, reject) => {
+        const $oc = this.$store.getters['vueOffcanvasManager/getOffcanvas'](element)
+
+        if ($oc.isOpen) {
+          this.$closeOffcanvas($oc)
+            .then(() => this.$store.dispatch('vueOffcanvasManager/removeOffcanvas', $oc))
+            .then(resolve)
+        } else {
+          this.$store.dispatch('vueOffcanvasManager/removeOffcanvas', $oc)
+            .then(resolve)
+        }
+      })
+    }
+
     /* Directives */
 
     // Configure the main app panel
@@ -193,8 +207,28 @@ const VueOffcanvas = {
         )
       },
 
-      componentUpdated (el, binding) {
-        console.log(isEqual(binding.oldValue, binding.value))
+      update (el, binding, vnode, oldVnode) {
+        const name = binding.arg
+        const parameters = binding.value
+        let $oc
+        let newParams = {}
+
+        try {
+          $oc = vnode.context.$store.getters['vueOffcanvasManager/getOffcanvas'](name)
+          Object.keys(parameters)
+            .forEach(par => {
+              if ($oc[par] !== parameters[par]) {
+                newParams[par] = parameters[par]
+              }
+            })
+          if (Object.keys(newParams).length > 0) {
+            console.log(newParams)
+            vnode.context.$store.dispatch('vueOffcanvasManager/updateOffcanvas', {
+              name,
+              params: newParams
+            })
+          }
+        } catch (e) {}
       }
     })
   }

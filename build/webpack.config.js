@@ -21,6 +21,26 @@ const webpackConfig = {
     libraryTarget: 'umd',
     libraryExport: 'default'
   },
+  externals: {
+    gsap: {
+      commonjs: 'gsap',
+      commonjs2: 'gsap',
+      amd: 'gsap',
+      root: 'gsap'
+    },
+    vue: {
+      commonjs: 'vue',
+      commonjs2: 'vue',
+      amd: 'vue',
+      root: 'vue'
+    },
+    vuex: {
+      commonjs: 'vuex',
+      commonjs2: 'vuex',
+      amd: 'vuex',
+      root: 'vuex'
+    }
+  },
   resolveLoader: {
     modules: [path.resolve(__dirname, '../node_modules')]
   },

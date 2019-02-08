@@ -88,8 +88,8 @@ export const parsePosition = (position) => {
       return {
         bottom: 0,
         right: 'auto',
-        top: 0,
-        left: 'auto',
+        top: 'auto',
+        left: 0,
         xPercent: 0,
         yPercent: 0
       }

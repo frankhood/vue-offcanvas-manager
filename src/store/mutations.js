@@ -16,14 +16,21 @@ export default {
       // state.offCanvasElements[offCanvas.name] = offCanvas
     }
   },
-  [types.UPDATE_OFFCANVAS] (state, offCanvas) {
-    if (!state.offCanvasElements.hasOwnProperty(offCanvas.name)) {
+  [types.UPDATE_OFFCANVAS] (state, { name, params }) {
+    if (!state.offCanvasElements.hasOwnProperty(name)) {
       throw new Error(`Error in offcanvas update hook: no offcanvas named '${offCanvas.name}' was found`)
     } else {
-      // Vue.set(state.offCanvasElements, offCanvas.name, offCanvas)
+      Object.keys(params)
+        .forEach(k => {
+          state.offCanvasElements[name][k] = params[k]
+        })
     }
   },
   [types.SET_OFFCANVAS_STATE] (state, { offcanvas, openingState }) {
     state.offCanvasElements[offcanvas.name].isOpen = openingState
+  },
+  [types.REMOVE_OFFCANVAS] (state, offCanvas) {
+    offCanvas.el.remove()
+    Vue.delete(state.offCanvasElements, offCanvas.name)
   }
 }

@@ -74,9 +74,6 @@
     "webpack-dev-server": "^3.1.9",
     "yarn-or-npm": "^2.0.4"
   },
-  "dependencies": {
-    "lodash": "^4.17.11"
-  },
   "peerDependencies": {
     "gsap": "^2.0.2",
     "vue": "^2.5.17",

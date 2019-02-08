@@ -1,31 +1,74 @@
 <!DOCTYPE html>
+<!--suppress XmlUnboundNsPrefix -->
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Vue Offcanvas Manager | Development page</title>
+    <style>
+      body {
+        height: 100vh;
+      }
+
+      .controls {
+        position: relative;
+        z-index: 1;
+      }
+
+      .offcanvas {
+        background-color: rgba(0,0,0,0.5);
+        height: 50vh;
+        width: 50vw;
+      }
+    </style>
   <script type="text/javascript" src="/vue-offcanvas-manager.min.js"></script></head>
   <body>
-    <div
-      id="main"
-      data-string-from-backend="I am a string"
-      data-object-from-backend='{
-        "first_property": "I am a property",
-        "second_property": "I am another property"
-      }'
-      data-number-from-backend="42"
-    >
-      <h1>Context</h1>
-      <p>
-        {{$context}}
-      </p>
+    <div id="app-root">
+      <div class="controls">
+        <label for="position">
+          Position
+          <select id="position" v-model="offcanvasOptionsA.position">
+            <option value="top" selected>Top</option>
+            <option value="right" selected>Right</option>
+            <option value="left" selected>Left</option>
+            <option value="bottom" selected>Bottom</option>
+            <option value="bottom-right" selected>Bottom right</option>
+            <option value="bottom-left" selected>Bottom left</option>
+            <option value="top-right" selected>Top right</option>
+            <option value="top-left" selected>Top left</option>
+          </select>
+        </label>
+
+        <br>
+        <button @click="$toggleOffcanvas('offcanvas-a')">Toggle A</button>
+        <button @click="$toggleOffcanvas('offcanvas-b')">Toggle B</button>
+        <br>
+        <button @click="$removeOffcanvas('offcanvas-a')">Remove A</button>
+        <button @click="$removeOffcanvas('offcanvas-b')">Remove B</button>
+      </div>
+
+      <aside class="offcanvas" v-offcanvas:offcanvas-a="offcanvasOptionsA"></aside>
+      <aside class="offcanvas" v-offcanvas:offcanvas-b="offcanvasOptionsB"></aside>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuex@3.0.1/dist/vuex.min.js"></script>
     <script>
-      Vue.use(VueOffcanvasManager)
-
+      let store = new Vuex.Store({})
+      Vue.use(Vuex)
+      Vue.use(VueOffcanvasManager, {store})
       new Vue({
-        el: '#main'
+        el: '#app-root',
+        store,
+        data () {
+          return {
+            offcanvasOptionsA: {
+              position: 'top'
+            },
+            offcanvasOptionsB: {
+              position: 'top'
+            }
+          }
+        }
       })
     </script>
   </body>

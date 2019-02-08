@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!--suppress XmlUnboundNsPrefix -->
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Vue Offcanvas Manager | Development page</title>
     <style>
+      body {
+        height: 100vh;
+      }
+
       .controls {
         position: relative;
         z-index: 1;
@@ -33,12 +38,16 @@
           </select>
         </label>
 
-        <button @click="$toggleOffcanvas('the-offcanvas')">Toggle!</button>
+        <br>
+        <button @click="$toggleOffcanvas('offcanvas-a')">Toggle A</button>
+        <button @click="$toggleOffcanvas('offcanvas-b')">Toggle B</button>
+        <br>
+        <button @click="$removeOffcanvas('offcanvas-a')">Remove A</button>
+        <button @click="$removeOffcanvas('offcanvas-b')">Remove B</button>
       </div>
 
-      <!--suppress XmlUnboundNsPrefix -->
       <aside class="offcanvas" v-offcanvas:offcanvas-a="offcanvasOptionsA"></aside>
-      <!--<aside class="offcanvas" v-offcanvas:offcanvas-b="offcanvasOptionsB"></aside>-->
+      <aside class="offcanvas" v-offcanvas:offcanvas-b="offcanvasOptionsB"></aside>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>

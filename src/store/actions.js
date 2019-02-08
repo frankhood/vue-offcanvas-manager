@@ -24,10 +24,10 @@ export default {
       }
     })
   },
-  updateOffcanvas ({ commit }, oc) {
+  updateOffcanvas ({ commit }, { name, params }) {
     return new Promise((resolve, reject) => {
       try {
-        commit(types.UPDATE_OFFCANVAS, oc)
+        commit(types.UPDATE_OFFCANVAS, { name, params })
         resolve()
       } catch (e) {
         reject(e)
@@ -37,6 +37,12 @@ export default {
   setOpeningState ({ commit }, { offcanvas, openingState }) {
     return new Promise((resolve, reject) => {
       commit(types.SET_OFFCANVAS_STATE, { offcanvas, openingState })
+      resolve()
+    })
+  },
+  removeOffcanvas ({ commit }, oc) {
+    return new Promise((resolve, reject) => {
+      commit(types.REMOVE_OFFCANVAS, oc)
       resolve()
     })
   }
