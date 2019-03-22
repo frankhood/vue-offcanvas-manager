@@ -1,7 +1,7 @@
 {
-  "name": "vue-viewport-manager",
+  "name": "vue-offcanvas-manager",
   "version": "0.1.0",
-  "repository": "https://github.com/frankhood/vue-viewport-manager",
+  "repository": "https://github.com/frankhood/vue-offcanvas-manager",
   "description": "A Vue spellbook to make panels appear and disappear wherever you want",
   "author": "Frankhood Business Solutions <info@frankhood.it>",
   "main": "dist/vue-offcanvas-manager.min.js",
